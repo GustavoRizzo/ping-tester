@@ -1,12 +1,16 @@
 import requests
 import time
+import csv
+from urllib.parse import urlparse
 
 def test_ping(url):
     try:
         response = requests.get(url, timeout=5)
-        return f"{url} - Status: {response.status_code}, Ping: {response.elapsed.total_seconds()}s\n"
+        status = response.status_code
+        ping = response.elapsed.total_seconds()
+        return status, ping
     except requests.RequestException:
-        return f"{url} - Status: Failed to connect\n"
+        return "Failed to connect", None
 
 def main():
     urls = [
@@ -16,13 +20,20 @@ def main():
     ]
 
     while True:
-        with open("ping_results.txt", "a") as f:
-            f.write(time.strftime("%Y-%m-%d %H:%M:%S") + "\n")
-            for url in urls:
-                result = test_ping(url)
-                f.write(result)
-                print(result)
-            f.write("\n")
+        for url in urls:
+            status, ping = test_ping(url)
+            name = url.split(".")[1]
+            filename = f"result/{name}_ping.csv"  # Nome do arquivo CSV baseado no nome do site
+            
+            with open(filename, "a", newline='') as csvfile:
+                csvwriter = csv.writer(csvfile)
+                
+                if csvfile.tell() == 0:  # Adicionar o cabeçalho apenas se o arquivo estiver vazio
+                    header = ["datetime", "url", "domain_name", "status", "ping"]
+                    csvwriter.writerow(header)
+                
+                csvwriter.writerow([time.strftime("%Y-%m-%d %H:%M:%S"), url, name, status, ping])
+                print(f"URL: {url}, Domain: {name}, Status: {status}, Ping: {ping}")
         
         time.sleep(6)  # Espera 10 minutos (10 minutos = 600 segundos)
 
