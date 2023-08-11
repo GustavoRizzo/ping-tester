@@ -1,0 +1,6 @@
+# Ignorar a pasta venv (ambiente virtual)
+venv/
+
+# Ignorar arquivos dentro da pasta result, mas não a pasta em si
+result/*
+!result/.gitkeep

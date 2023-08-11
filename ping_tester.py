@@ -35,7 +35,7 @@ def main():
                 csvwriter.writerow([time.strftime("%Y-%m-%d %H:%M:%S"), url, name, status, ping])
                 print(f"URL: {url}, Domain: {name}, Status: {status}, Ping: {ping}")
         
-        time.sleep(6)  # Espera 10 minutos (10 minutos = 600 segundos)
+        time.sleep(600)  # Espera 10 minutos (10 minutos = 600 segundos)
 
 if __name__ == "__main__":
     main()
